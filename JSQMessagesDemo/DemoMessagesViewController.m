@@ -16,9 +16,34 @@
 //  Released under an MIT license: http://opensource.org/licenses/MIT
 //
 
+#import "JSQMessagesMediaInputToolbar.h"
+#import "JSQMessagesToolbarMediaContentView.h"
+
 #import "DemoMessagesViewController.h"
 
+@interface DemoMessagesViewController ()<JSQKeyboardDataSource, JSQKeyboardDelegate>
+
+@property (weak, nonatomic) IBOutlet JSQMessagesMediaInputToolbar *mediaInputToolbar;
+
+@property (nonatomic) NSArray<id<JSQKey>> *keys;
+
+@end
+
 @implementation DemoMessagesViewController
+
+#pragma mark - Class methods override
+
++ (UINib *)nib
+{
+    return [UINib nibWithNibName:NSStringFromClass([DemoMessagesViewController class])
+                          bundle:[NSBundle bundleForClass:[DemoMessagesViewController class]]];
+}
+
++ (instancetype)messagesViewController
+{
+    return [[[self class] alloc] initWithNibName:NSStringFromClass([DemoMessagesViewController class])
+                                          bundle:[NSBundle bundleForClass:[DemoMessagesViewController class]]];
+}
 
 #pragma mark - View lifecycle
 
@@ -43,7 +68,12 @@
     self.senderId = kJSQDemoAvatarIdSquires;
     self.senderDisplayName = kJSQDemoAvatarDisplayNameSquires;
     
+    self.inputToolbar.contentView.textView.placeHolder = nil;
+
     self.inputToolbar.contentView.textView.pasteDelegate = self;
+    
+    self.inputToolbar.contentView.textView.keyboardDataSource = self;
+    self.inputToolbar.contentView.textView.keyboardDelegate = self;
     
     /**
      *  Load up our fake data for the demo
@@ -87,12 +117,64 @@
      *  self.inputToolbar.contentView.leftBarButtonItem = custom button or nil to remove
      *  self.inputToolbar.contentView.rightBarButtonItem = custom button or nil to remove
      */
-
+    
+    self.inputToolbar.contentView.leftBarButtonItem = [UIButton buttonWithType:UIButtonTypeContactAdd];
+    
+    JSQMessagesToolbarMediaContentView *mediaContentView = (JSQMessagesToolbarMediaContentView *)self.mediaInputToolbar.contentView;
+    [mediaContentView.audioInputButton addTarget:self action:@selector(startOrStopRecordingAudio) forControlEvents:UIControlEventValueChanged];
+    
     /**
      *  Set a maximum height for the input toolbar
      *
      *  self.inputToolbar.maximumHeight = 150;
      */
+    
+    [self addAdditionalButtonItemsToLeftSideOfTheToolbarContentView];
+}
+
+- (void)addAdditionalButtonItemsToLeftSideOfTheToolbarContentView
+{
+    self.inputToolbar.contentView.leftBarButtonItemWidth = 50.0;
+    
+    UIView *leftBarButtonContainerView = self.inputToolbar.contentView.leftBarButtonContainerView;
+    
+    // Audio input method switch button
+    UIButton *audioTextInputMethodSwitchButton = [UIButton buttonWithType:UIButtonTypeInfoDark];
+    [audioTextInputMethodSwitchButton setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [audioTextInputMethodSwitchButton addTarget:self action:@selector(audioTextInputMethodSwitch) forControlEvents:UIControlEventTouchUpInside];
+    
+    [leftBarButtonContainerView addSubview:audioTextInputMethodSwitchButton];
+    
+    UIButton *leftBarButtonItem = self.inputToolbar.contentView.leftBarButtonItem;
+    
+    // Remove leftBarButtonItem's left constraint
+    __block NSLayoutConstraint *leftBarItemLeftConstraint;
+    [leftBarButtonContainerView.constraints enumerateObjectsUsingBlock:^(__kindof NSLayoutConstraint * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+        BOOL isFirstItemLeftBarButtonContainerView = obj.firstItem == leftBarButtonContainerView;
+        BOOL isFirstAttributeLeft = obj.firstAttribute == NSLayoutAttributeLeading;
+        
+        BOOL isSecondItemLeftBarItem = obj.secondItem == leftBarButtonItem;
+        BOOL isSecondAttributeLeft = obj.secondAttribute == NSLayoutAttributeLeading;
+        
+        if (isFirstItemLeftBarButtonContainerView && isFirstAttributeLeft && isSecondItemLeftBarItem && isSecondAttributeLeft) {
+            leftBarItemLeftConstraint = obj;
+            *stop = YES;
+        }
+    }];
+    
+    if (leftBarItemLeftConstraint) {
+        [leftBarButtonContainerView removeConstraint:leftBarItemLeftConstraint];
+    }
+    
+    // Add constraints for audioTextInputMethodSwitchButton
+    // Y
+    [leftBarButtonContainerView addConstraint:[NSLayoutConstraint constraintWithItem:audioTextInputMethodSwitchButton attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:leftBarButtonContainerView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
+    
+    // Left
+    [leftBarButtonContainerView addConstraint:[NSLayoutConstraint constraintWithItem:audioTextInputMethodSwitchButton attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:leftBarButtonContainerView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0]];
+    // Right
+    [leftBarButtonContainerView addConstraint:[NSLayoutConstraint constraintWithItem:audioTextInputMethodSwitchButton attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:leftBarButtonItem attribute:NSLayoutAttributeLeft multiplier:1.0 constant:-6]];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -291,8 +373,20 @@
     [self.delegateModal didDismissJSQDemoViewController:self];
 }
 
+- (void)audioTextInputMethodSwitch
+{
+    NSLog(@"audioTextInputMethodSwitch");
+    
+    JSQMessagesMediaInputToolbar *inputToolbar = (JSQMessagesMediaInputToolbar *)self.inputToolbar;
+    JSQMessagesToolbarMediaContentView *mediaContentView = (JSQMessagesToolbarMediaContentView *)inputToolbar.contentView;
+    
+    [mediaContentView switchMediaContentView];
+}
 
-
+- (void)startOrStopRecordingAudio
+{
+    NSLog(@"%s", __func__);
+}
 
 #pragma mark - JSQMessagesViewController method overrides
 
@@ -323,15 +417,17 @@
 
 - (void)didPressAccessoryButton:(UIButton *)sender
 {
-    [self.inputToolbar.contentView.textView resignFirstResponder];
-
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Media messages"
-                                                       delegate:self
-                                              cancelButtonTitle:@"Cancel"
-                                         destructiveButtonTitle:nil
-                                              otherButtonTitles:@"Send photo", @"Send location", @"Send video", nil];
+//    [self.inputToolbar.contentView.textView resignFirstResponder];
+//
+//    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Media messages"
+//                                                       delegate:self
+//                                              cancelButtonTitle:@"Cancel"
+//                                         destructiveButtonTitle:nil
+//                                              otherButtonTitles:@"Send photo", @"Send location", @"Send video", nil];
+//    
+//    [sheet showFromToolbar:self.inputToolbar];
     
-    [sheet showFromToolbar:self.inputToolbar];
+    [self.inputToolbar.contentView.textView switchInputView];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex
@@ -532,6 +628,25 @@
 
 #pragma mark - UICollectionView Delegate
 
+#pragma mark - JSQKeyboardDataSource
+
+- (NSInteger)numberOfKeysInKeyboard:(UIView *)keyboard
+{
+    return self.keys.count;
+}
+
+- (id<JSQKey>)keyboard:(UIView *)keyboard keyAtIndexPath:(NSIndexPath *)indexPath
+{
+    return self.keys[indexPath.row];
+}
+
+#pragma mark - JSQKeyboardDelegate
+
+- (void)keyboard:(UIView *)keyboard didTappedKeyAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSLog(@"%s", __func__);
+}
+
 #pragma mark - Custom menu items
 
 - (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
@@ -658,6 +773,22 @@
         return NO;
     }
     return YES;
+}
+
+#pragma mark - Getter
+
+- (JSQMessagesInputToolbar *)inputToolbar
+{
+    NSLog(@"%s", __func__);
+    return self.mediaInputToolbar;
+}
+
+- (NSArray<id<JSQKey>> *)keys
+{
+    if (!_keys) {
+        _keys = (NSArray<id<JSQKey>> *)@[[[JSQKey alloc] initWithImage:[UIImage imageNamed:@"Camera"] name:@"Camera"], [[JSQKey alloc] initWithImage:[UIImage imageNamed:@"Photo"] name:@"Photo"]];
+    }
+    return _keys;
 }
 
 @end

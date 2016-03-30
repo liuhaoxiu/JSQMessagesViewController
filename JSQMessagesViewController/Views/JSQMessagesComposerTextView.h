@@ -18,6 +18,9 @@
 
 #import <UIKit/UIKit.h>
 
+#import "JSQKeyboardDataSource.h"
+#import "JSQKeyboardDelegate.h"
+
 @class JSQMessagesComposerTextView;
 
 /**
@@ -57,6 +60,10 @@
  */
 @property (weak, nonatomic) id<JSQMessagesComposerTextViewPasteDelegate> pasteDelegate;
 
+@property (weak, nonatomic) id<JSQKeyboardDataSource> keyboardDataSource;
+
+@property (weak, nonatomic) id<JSQKeyboardDelegate> keyboardDelegate;
+
 /**
  *  Determines whether or not the text view contains text after trimming white space 
  *  from the front and back of its string.
@@ -64,5 +71,7 @@
  *  @return `YES` if the text view contains text, `NO` otherwise.
  */
 - (BOOL)hasText;
+
+- (void)switchInputView;
 
 @end

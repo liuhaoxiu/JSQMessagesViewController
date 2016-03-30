@@ -17,11 +17,25 @@
 //
 
 #import "JSQMessagesComposerTextView.h"
+#import "JSQKeyCell.h"
+#import "JSQKey.h"
 
 #import <QuartzCore/QuartzCore.h>
 
 #import "NSString+JSQMessages.h"
 
+static CGFloat const sJSQCustomKeyboardHeight = 180.0f;
+
+static CGFloat const sJSQDefaultKeyWidth = 60.0f;
+static CGFloat const sJSQDefaultKeyHeight = 80.0f;
+
+static NSString *sJSQKeyCellIdentifier = @"JSQKeyCell";
+
+@interface JSQMessagesComposerTextView ()<UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+
+@property (nonatomic) UICollectionView *customInputView;
+
+@end
 
 @implementation JSQMessagesComposerTextView
 
@@ -85,6 +99,42 @@
     [self jsq_removeTextViewNotificationObservers];
 }
 
+#pragma mark - UICollectionViewDataSource
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    return [self.keyboardDataSource numberOfKeysInKeyboard:collectionView];
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    id<JSQKey> model = [self.keyboardDataSource keyboard:collectionView keyAtIndexPath:indexPath];
+    
+    JSQKeyCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:sJSQKeyCellIdentifier forIndexPath:indexPath];
+    
+    cell.keyImageView.image = model.keyImage;
+    cell.keyNameLabel.text = model.keyName;
+    
+    return cell;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self.keyboardDelegate respondsToSelector:@selector(keyboard:sizeForKeyAtIndexPath:)]) {
+        return [self.keyboardDelegate keyboard:collectionView sizeForKeyAtIndexPath:indexPath];
+    }
+    return CGSizeMake(sJSQDefaultKeyWidth, sJSQDefaultKeyHeight);
+}
+
+#pragma mark - UICollectionViewDelegate
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self.keyboardDelegate respondsToSelector:@selector(keyboard:didTappedKeyAtIndexPath:)]) {
+        [self.keyboardDelegate keyboard:collectionView didTappedKeyAtIndexPath:indexPath];
+    }
+}
+
 #pragma mark - Composer text view
 
 - (BOOL)hasText
@@ -92,7 +142,20 @@
     return ([[self.text jsq_stringByTrimingWhitespace] length] > 0);
 }
 
-#pragma mark - Setters
+#pragma mark - Public method
+
+- (void)switchInputView
+{
+    if (self.inputView) {
+        self.inputView = nil;
+    }
+    else {
+        self.inputView = self.customInputView;
+    }
+    [self reloadInputViews];
+}
+
+#pragma mark - Setters and Getter
 
 - (void)setPlaceHolder:(NSString *)placeHolder
 {
@@ -112,6 +175,26 @@
     
     _placeHolderTextColor = placeHolderTextColor;
     [self setNeedsDisplay];
+}
+
+- (UICollectionView *)customInputView
+{
+    if (!_customInputView) {
+        
+        CGRect fullScreenRect = [UIScreen mainScreen].bounds;
+        
+        UICollectionViewFlowLayout *flowLayout = [UICollectionViewFlowLayout new];
+        flowLayout.minimumInteritemSpacing = 8.0f;
+        flowLayout.sectionInset = UIEdgeInsetsMake(10.0, 10.0, 10.0, 10.0);
+        
+        _customInputView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(fullScreenRect), sJSQCustomKeyboardHeight) collectionViewLayout:flowLayout];
+        _customInputView.backgroundColor = [UIColor whiteColor];
+        _customInputView.dataSource = self;
+        _customInputView.delegate = self;
+        
+        [_customInputView registerClass:[JSQKeyCell class] forCellWithReuseIdentifier:sJSQKeyCellIdentifier];
+    }
+    return _customInputView;
 }
 
 #pragma mark - UITextView overrides

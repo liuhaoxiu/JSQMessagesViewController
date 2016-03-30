@@ -27,6 +27,8 @@
 #import "JSQMessagesCollectionViewCellOutgoing.h"
 #import "JSQMessagesTypingIndicatorFooterView.h"
 #import "JSQMessagesLoadEarlierHeaderView.h"
+#import "JSQMessagesAudioInputButton.h"
+#import "JSQKeyCell.h"
 
 //  Layout
 #import "JSQMessagesBubbleSizeCalculating.h"
@@ -39,6 +41,8 @@
 #import "JSQMessagesComposerTextView.h"
 #import "JSQMessagesInputToolbar.h"
 #import "JSQMessagesToolbarContentView.h"
+#import "JSQMessagesMediaInputToolbar.h"
+#import "JSQMessagesToolbarMediaContentView.h"
 
 //  Model
 #import "JSQMessage.h"
@@ -58,6 +62,9 @@
 #import "JSQMessageBubbleImageDataSource.h"
 #import "JSQMessagesCollectionViewDataSource.h"
 #import "JSQMessagesCollectionViewDelegateFlowLayout.h"
+#import "JSQKey.h"
+#import "JSQKeyboardDataSource.h"
+#import "JSQKeyboardDelegate.h"
 
 //  Factories
 #import "JSQMessagesAvatarImageFactory.h"
