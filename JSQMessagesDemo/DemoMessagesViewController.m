@@ -427,6 +427,16 @@
 //    
 //    [sheet showFromToolbar:self.inputToolbar];
     
+    JSQMessagesMediaInputToolbar *inputToolbar = (JSQMessagesMediaInputToolbar *)self.inputToolbar;
+    JSQMessagesToolbarMediaContentView *mediaContentView = (JSQMessagesToolbarMediaContentView *)inputToolbar.contentView;
+    if (mediaContentView.audioInputButton.superview) {
+        [mediaContentView switchMediaContentView];
+    }
+    
+    if (!self.inputToolbar.contentView.textView.isFirstResponder) {
+        [self.inputToolbar.contentView.textView becomeFirstResponder];
+    }
+    
     [self.inputToolbar.contentView.textView switchInputView];
 }
 
@@ -461,8 +471,6 @@
     
     [self finishSendingMessageAnimated:YES];
 }
-
-
 
 #pragma mark - JSQMessages CollectionView DataSource
 
@@ -645,6 +653,29 @@
 - (void)keyboard:(UIView *)keyboard didTappedKeyAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"%s", __func__);
+    switch (indexPath.row) {
+        case 0:
+            [self.demoData addPhotoMediaMessage];
+            break;
+            
+        case 1:
+        {
+            __weak UICollectionView *weakView = self.collectionView;
+            
+            [self.demoData addLocationMediaMessageCompletion:^{
+                [weakView reloadData];
+            }];
+        }
+            break;
+            
+        case 2:
+            [self.demoData addVideoMediaMessage];
+            break;
+    }
+    
+    [JSQSystemSoundPlayer jsq_playMessageSentSound];
+    
+    [self finishSendingMessageAnimated:YES];
 }
 
 #pragma mark - Custom menu items
