@@ -14,6 +14,6 @@
 
 - (CGSize)keyboard:(UIView *)keyboard sizeForKeyAtIndexPath:(NSIndexPath *)indexPath;
 
-- (void)keyboard:(UIView *)keyboard didTappedKeyAtIndexPath:(NSIndexPath *)indexPath;
+- (void)keyboard:(UIView *)keyboard didTapKeyAtIndexPath:(NSIndexPath *)indexPath;
 
 @end

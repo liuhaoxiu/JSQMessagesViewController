@@ -130,8 +130,8 @@ static NSString *sJSQKeyCellIdentifier = @"JSQKeyCell";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.keyboardDelegate respondsToSelector:@selector(keyboard:didTappedKeyAtIndexPath:)]) {
-        [self.keyboardDelegate keyboard:collectionView didTappedKeyAtIndexPath:indexPath];
+    if ([self.keyboardDelegate respondsToSelector:@selector(keyboard:didTapKeyAtIndexPath:)]) {
+        [self.keyboardDelegate keyboard:collectionView didTapKeyAtIndexPath:indexPath];
     }
 }
 

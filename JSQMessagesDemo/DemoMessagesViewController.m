@@ -650,7 +650,7 @@
 
 #pragma mark - JSQKeyboardDelegate
 
-- (void)keyboard:(UIView *)keyboard didTappedKeyAtIndexPath:(NSIndexPath *)indexPath
+- (void)keyboard:(UIView *)keyboard didTapKeyAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"%s", __func__);
     switch (indexPath.row) {
