@@ -26,6 +26,8 @@
 @property (weak, nonatomic) IBOutlet JSQMessagesMediaInputToolbar *mediaInputToolbar;
 
 @property (nonatomic) NSArray<id<JSQKey>> *keys;
+@property (nonatomic) NSMutableArray *sendQueue;
+@property (nonatomic) NSTimer *sendTimer;
 
 @end
 
@@ -130,6 +132,8 @@
      */
     
     [self addAdditionalButtonItemsToLeftSideOfTheToolbarContentView];
+    
+    [[NSRunLoop currentRunLoop] addTimer:self.sendTimer forMode:NSDefaultRunLoopMode];
 }
 
 - (void)addAdditionalButtonItemsToLeftSideOfTheToolbarContentView
@@ -302,6 +306,12 @@
                 
                 newMediaData = videoItemCopy;
             }
+            else if ([copyMediaData isKindOfClass:[JSQAudioMediaItem class]]) {
+                
+                JSQAudioMediaItem *audioItemCopy = [((JSQAudioMediaItem *)copyMediaData) copy];
+                
+                newMediaData =audioItemCopy;
+            }
             else {
                 NSLog(@"%s error: unrecognized media item", __PRETTY_FUNCTION__);
             }
@@ -388,6 +398,24 @@
     NSLog(@"%s", __func__);
 }
 
+- (void)handleSend
+{
+    if (self.sendQueue.count > 0) {
+        
+        NSUInteger randomIndex = (NSUInteger)arc4random_uniform((u_int32_t)self.sendQueue.count);
+        
+        JSQMessage *message = self.sendQueue[randomIndex];
+        message.status = randomIndex % 2 ? JSQMessageStatusSuccess : JSQMessageStatusFail;
+        
+        NSUInteger index = [self.demoData.messages indexOfObject:message];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        
+        [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+        
+        [self.sendQueue removeObjectAtIndex:randomIndex];
+    }
+}
+
 #pragma mark - JSQMessagesViewController method overrides
 
 - (void)didPressSendButton:(UIButton *)button
@@ -409,7 +437,9 @@
                                              senderDisplayName:senderDisplayName
                                                           date:date
                                                           text:text];
+    message.status = JSQMessageStatusSending;
     
+    [self.sendQueue addObject:message];
     [self.demoData.messages addObject:message];
     
     [self finishSendingMessageAnimated:YES];
@@ -448,23 +478,30 @@
     }
     
     switch (buttonIndex) {
-        case 0:
-            [self.demoData addPhotoMediaMessage];
+        case 0:{
+            JSQMessage *photoMessage = [self.demoData fakePhotoMediaMessage];
+            photoMessage.status = JSQMessageStatusSending;
+            [self.demoData.messages addObject:photoMessage];
             break;
+        }
             
-        case 1:
-        {
+        case 1:{
             __weak UICollectionView *weakView = self.collectionView;
             
-            [self.demoData addLocationMediaMessageCompletion:^{
+            JSQMessage *locationMessage = [self.demoData fakeLocationMediaMessageCompletion:^{
                 [weakView reloadData];
             }];
+            locationMessage.status = JSQMessageStatusSending;
+            [self.demoData.messages addObject:locationMessage];
+            break;
         }
-            break;
             
-        case 2:
-            [self.demoData addVideoMediaMessage];
+        case 2: {
+            JSQMessage *videoMessage = [self.demoData fakeVideoMediaMessage];
+            videoMessage.status = JSQMessageStatusSending;
+            [self.demoData.messages addObject:videoMessage];
             break;
+        }
     }
     
     [JSQSystemSoundPlayer jsq_playMessageSentSound];
@@ -653,25 +690,37 @@
 - (void)keyboard:(UIView *)keyboard didTapKeyAtIndexPath:(NSIndexPath *)indexPath
 {
     NSLog(@"%s", __func__);
+    JSQMessage *message;
+    
     switch (indexPath.row) {
-        case 0:
-            [self.demoData addPhotoMediaMessage];
-            break;
+        case 0:{
+            message = [self.demoData fakePhotoMediaMessage];
+            message.status = JSQMessageStatusSending;
+            [self.demoData.messages addObject:message];
             
-        case 1:
-        {
+            break;
+        }
+            
+        case 1:{
             __weak UICollectionView *weakView = self.collectionView;
             
-            [self.demoData addLocationMediaMessageCompletion:^{
+            message = [self.demoData fakeLocationMediaMessageCompletion:^{
                 [weakView reloadData];
             }];
+            message.status = JSQMessageStatusSending;
+            [self.demoData.messages addObject:message];
+            break;
         }
-            break;
             
-        case 2:
-            [self.demoData addVideoMediaMessage];
+        case 2: {
+            message = [self.demoData fakeVideoMediaMessage];
+            message.status = JSQMessageStatusSending;
+            [self.demoData.messages addObject:message];
             break;
+        }
     }
+    
+    [self.sendQueue addObject:message];
     
     [JSQSystemSoundPlayer jsq_playMessageSentSound];
     
@@ -785,6 +834,27 @@
 - (void)collectionView:(JSQMessagesCollectionView *)collectionView didTapCellAtIndexPath:(NSIndexPath *)indexPath touchLocation:(CGPoint)touchLocation
 {
     NSLog(@"Tapped cell at %@!", NSStringFromCGPoint(touchLocation));
+    
+    JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    if (!cell) {
+        return;
+    }
+    
+    if (!CGRectContainsPoint(cell.statusContainerView.frame, touchLocation)) {
+        return;
+    }
+    
+    JSQMessage *message = self.demoData.messages[indexPath.row];
+    if (message.status != JSQMessageStatusFail) {
+        return;
+    }
+    
+    // Resend failed message
+    message.status = JSQMessageStatusSending;
+    
+    [self.sendQueue addObject:message];
+    
+    [collectionView reloadItemsAtIndexPaths:@[indexPath]];
 }
 
 #pragma mark - JSQMessagesComposerTextViewPasteDelegate methods
@@ -820,6 +890,22 @@
         _keys = (NSArray<id<JSQKey>> *)@[[[JSQKey alloc] initWithImage:[UIImage imageNamed:@"Camera"] name:@"Camera"], [[JSQKey alloc] initWithImage:[UIImage imageNamed:@"Photo"] name:@"Photo"]];
     }
     return _keys;
+}
+
+- (NSMutableArray *)sendQueue
+{
+    if (!_sendQueue) {
+        _sendQueue = [NSMutableArray arrayWithCapacity:128];
+    }
+    return _sendQueue;
+}
+
+- (NSTimer *)sendTimer
+{
+    if (!_sendTimer) {
+        _sendTimer = [NSTimer timerWithTimeInterval:4 target:self selector:@selector(handleSend) userInfo:nil repeats:YES];
+    }
+    return _sendTimer;
 }
 
 @end

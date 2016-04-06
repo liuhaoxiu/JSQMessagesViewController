@@ -18,6 +18,7 @@
 
 #import <UIKit/UIKit.h>
 
+#import "JSQMessageData.h"
 #import "JSQMessagesLabel.h"
 #import "JSQMessagesCellTextView.h"
 
@@ -154,6 +155,8 @@
  */
 @property (weak, nonatomic, readonly) UIView *avatarContainerView;
 
+@property (weak, nonatomic, readonly) UIView *statusContainerView;
+
 /**
  *  The media view of the cell. This view displays the contents of a media message.
  *
@@ -166,6 +169,8 @@
  *  This gesture handles the tap event for the avatarImageView and notifies the cell's delegate.
  */
 @property (weak, nonatomic, readonly) UITapGestureRecognizer *tapGestureRecognizer;
+
+- (void)configureWithStatus:(JSQMessageStatus)status;
 
 #pragma mark - Class methods
 

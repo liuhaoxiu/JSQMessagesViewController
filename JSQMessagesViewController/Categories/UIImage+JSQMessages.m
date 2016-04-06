@@ -48,7 +48,7 @@
     return newImage;
 }
 
-+ (UIImage *)jsq_bubbleImageFromBundleWithName:(NSString *)name
++ (UIImage *)jsq_imageFromMessagesAssetBundleWithName:(NSString *)name
 {
     NSBundle *bundle = [NSBundle jsq_messagesAssetBundle];
     NSString *path = [bundle pathForResource:name ofType:@"png" inDirectory:@"Images"];
@@ -57,52 +57,52 @@
 
 + (UIImage *)jsq_bubbleRegularImage
 {
-    return [UIImage jsq_bubbleImageFromBundleWithName:@"bubble_regular"];
+    return [UIImage jsq_imageFromMessagesAssetBundleWithName:@"bubble_regular"];
 }
 
 + (UIImage *)jsq_bubbleRegularTaillessImage
 {
-    return [UIImage jsq_bubbleImageFromBundleWithName:@"bubble_tailless"];
+    return [UIImage jsq_imageFromMessagesAssetBundleWithName:@"bubble_tailless"];
 }
 
 + (UIImage *)jsq_bubbleRegularStrokedImage
 {
-    return [UIImage jsq_bubbleImageFromBundleWithName:@"bubble_stroked"];
+    return [UIImage jsq_imageFromMessagesAssetBundleWithName:@"bubble_stroked"];
 }
 
 + (UIImage *)jsq_bubbleRegularStrokedTaillessImage
 {
-    return [UIImage jsq_bubbleImageFromBundleWithName:@"bubble_stroked_tailless"];
+    return [UIImage jsq_imageFromMessagesAssetBundleWithName:@"bubble_stroked_tailless"];
 }
 
 + (UIImage *)jsq_bubbleCompactImage
 {
-    return [UIImage jsq_bubbleImageFromBundleWithName:@"bubble_min"];
+    return [UIImage jsq_imageFromMessagesAssetBundleWithName:@"bubble_min"];
 }
 
 + (UIImage *)jsq_bubbleCompactTaillessImage
 {
-    return [UIImage jsq_bubbleImageFromBundleWithName:@"bubble_min_tailless"];
+    return [UIImage jsq_imageFromMessagesAssetBundleWithName:@"bubble_min_tailless"];
 }
 
 + (UIImage *)jsq_defaultAccessoryImage
 {
-    return [UIImage jsq_bubbleImageFromBundleWithName:@"clip"];
+    return [UIImage jsq_imageFromMessagesAssetBundleWithName:@"clip"];
 }
 
 + (UIImage *)jsq_defaultTypingIndicatorImage
 {
-    return [UIImage jsq_bubbleImageFromBundleWithName:@"typing"];
+    return [UIImage jsq_imageFromMessagesAssetBundleWithName:@"typing"];
 }
 
 + (UIImage *)jsq_defaultPlayImage
 {
-    return [UIImage jsq_bubbleImageFromBundleWithName:@"play"];
+    return [UIImage jsq_imageFromMessagesAssetBundleWithName:@"play"];
 }
 
 + (UIImage *)jsq_defaultPauseImage
 {
-    return [UIImage jsq_bubbleImageFromBundleWithName:@"pause"];
+    return [UIImage jsq_imageFromMessagesAssetBundleWithName:@"pause"];
 }
 
 @end

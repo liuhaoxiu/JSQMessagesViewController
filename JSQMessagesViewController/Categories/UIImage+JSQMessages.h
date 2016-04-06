@@ -81,4 +81,10 @@
  */
 + (UIImage *)jsq_defaultPauseImage;
 
+/**
+ *  @return The image with specify name in JSQMesseagesAssets.bundle.
+ */
++ (UIImage *)jsq_imageFromMessagesAssetBundleWithName:(NSString *)name;
+
+
 @end

@@ -130,7 +130,9 @@
                                                      text:@"Now with media messages!"],
                      nil];
     
-    [self addPhotoMediaMessage];
+    JSQMessage *photoMessage = [self fakePhotoMediaMessage];
+    [self.messages addObject:photoMessage];
+
     [self addAudioMediaMessage];
     
     /**
@@ -155,6 +157,10 @@
         
         [self.messages addObject:reallyLongMessage];
     }
+    
+    [self.messages enumerateObjectsUsingBlock:^(JSQMessage * _Nonnull message, NSUInteger idx, BOOL * _Nonnull stop) {
+        message.status = JSQMessageStatusSuccess;
+    }];
 }
 
 - (void)addAudioMediaMessage
@@ -165,19 +171,20 @@
     JSQMessage *audioMessage = [JSQMessage messageWithSenderId:kJSQDemoAvatarIdSquires
                                                    displayName:kJSQDemoAvatarDisplayNameSquires
                                                          media:audioItem];
+    
     [self.messages addObject:audioMessage];
 }
 
-- (void)addPhotoMediaMessage
+- (JSQMessage *)fakePhotoMediaMessage
 {
     JSQPhotoMediaItem *photoItem = [[JSQPhotoMediaItem alloc] initWithImage:[UIImage imageNamed:@"goldengate"]];
     JSQMessage *photoMessage = [JSQMessage messageWithSenderId:kJSQDemoAvatarIdSquires
                                                    displayName:kJSQDemoAvatarDisplayNameSquires
                                                          media:photoItem];
-    [self.messages addObject:photoMessage];
+    return photoMessage;
 }
 
-- (void)addLocationMediaMessageCompletion:(JSQLocationMediaItemCompletionBlock)completion
+- (JSQMessage *)fakeLocationMediaMessageCompletion:(JSQLocationMediaItemCompletionBlock)completion
 {
     CLLocation *ferryBuildingInSF = [[CLLocation alloc] initWithLatitude:37.795313 longitude:-122.393757];
     
@@ -187,10 +194,10 @@
     JSQMessage *locationMessage = [JSQMessage messageWithSenderId:kJSQDemoAvatarIdSquires
                                                       displayName:kJSQDemoAvatarDisplayNameSquires
                                                             media:locationItem];
-    [self.messages addObject:locationMessage];
+    return locationMessage;
 }
 
-- (void)addVideoMediaMessage
+- (JSQMessage *)fakeVideoMediaMessage
 {
     // don't have a real video, just pretending
     NSURL *videoURL = [NSURL URLWithString:@"file://"];
@@ -199,7 +206,7 @@
     JSQMessage *videoMessage = [JSQMessage messageWithSenderId:kJSQDemoAvatarIdSquires
                                                    displayName:kJSQDemoAvatarDisplayNameSquires
                                                          media:videoItem];
-    [self.messages addObject:videoMessage];
+    return videoMessage;
 }
 
 @end

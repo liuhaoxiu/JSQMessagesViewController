@@ -21,6 +21,8 @@
 
 @implementation JSQMessage
 
+@synthesize status = _status;
+
 #pragma mark - Initialization
 
 + (instancetype)messageWithSenderId:(NSString *)senderId

@@ -62,6 +62,8 @@
     XCTAssertNotNil([UIImage jsq_defaultTypingIndicatorImage]);
     
     XCTAssertNotNil([UIImage jsq_defaultPlayImage]);
+    
+    XCTAssertNotNil([UIImage jsq_imageFromMessagesAssetBundleWithName:@"fail_indicator@2x"]);
 }
 
 @end

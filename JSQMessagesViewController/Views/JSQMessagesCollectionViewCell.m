@@ -24,7 +24,7 @@
 
 #import "UIView+JSQMessages.h"
 #import "UIDevice+JSQMessages.h"
-
+#import "UIImage+JSQMessages.h"
 
 static NSMutableSet *jsqMessagesCollectionViewCellActions = nil;
 
@@ -42,6 +42,8 @@ static NSMutableSet *jsqMessagesCollectionViewCellActions = nil;
 @property (weak, nonatomic) IBOutlet UIImageView *avatarImageView;
 @property (weak, nonatomic) IBOutlet UIView *avatarContainerView;
 
+@property (weak, nonatomic) IBOutlet UIView *statusContainerView;
+
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *messageBubbleContainerWidthConstraint;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *textViewTopVerticalSpaceConstraint;
@@ -55,6 +57,9 @@ static NSMutableSet *jsqMessagesCollectionViewCellActions = nil;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *avatarContainerViewWidthConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *avatarContainerViewHeightConstraint;
+
+@property (strong, nonatomic) UIActivityIndicatorView *activityIndicatorView;
+@property (strong, nonatomic) UIImageView *failIndicatorImageView;
 
 @property (assign, nonatomic) UIEdgeInsets textViewFrameInsets;
 
@@ -150,6 +155,57 @@ static NSMutableSet *jsqMessagesCollectionViewCellActions = nil;
     _tapGestureRecognizer = nil;
 }
 
+#pragma mark - Public method
+
+- (void)configureWithStatus:(JSQMessageStatus)status
+{
+    switch (status) {
+        case JSQMessageStatusReady:
+            break;
+            
+        case JSQMessageStatusSending:{
+            if (self.failIndicatorImageView.superview) {
+                [self.failIndicatorImageView removeFromSuperview];
+            }
+            
+            [self.statusContainerView addSubview:self.activityIndicatorView];
+            [self.statusContainerView jsq_pinAllEdgesOfSubview:self.activityIndicatorView];
+            
+            [UIView animateWithDuration:0.1 animations:^{
+                [self.statusContainerView layoutIfNeeded];
+            } completion:^(BOOL finished) {
+                [self.activityIndicatorView startAnimating];
+            }];
+            break;
+        }
+        
+        case JSQMessageStatusSuccess:{
+            if (self.activityIndicatorView.superview) {
+                [self.activityIndicatorView stopAnimating];
+            }
+            
+            if (self.failIndicatorImageView.superview) {
+                [self.failIndicatorImageView removeFromSuperview];
+            }
+            break;
+        }
+            
+        case JSQMessageStatusFail: {
+            [self.statusContainerView addSubview:self.failIndicatorImageView];
+            
+            [self.statusContainerView addConstraint:[NSLayoutConstraint constraintWithItem:self.failIndicatorImageView attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self.statusContainerView attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+            [self.statusContainerView addConstraint:[NSLayoutConstraint constraintWithItem:self.failIndicatorImageView attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self.statusContainerView attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
+            [self.statusContainerView addConstraint:[NSLayoutConstraint constraintWithItem:self.failIndicatorImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:30.0]];
+            [self.statusContainerView addConstraint:[NSLayoutConstraint constraintWithItem:self.failIndicatorImageView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeHeight multiplier:1.0 constant:30.0]];
+            
+            [self.statusContainerView layoutIfNeeded];
+            
+            break;
+        }
+    }
+}
+
+
 #pragma mark - Collection view cell
 
 - (void)prepareForReuse
@@ -166,6 +222,14 @@ static NSMutableSet *jsqMessagesCollectionViewCellActions = nil;
 
     self.avatarImageView.image = nil;
     self.avatarImageView.highlightedImage = nil;
+    
+    if (self.activityIndicatorView.superview) {
+        [self.activityIndicatorView removeFromSuperview];
+    }
+    
+    if (self.failIndicatorImageView.superview) {
+        [self.failIndicatorImageView removeFromSuperview];
+    }
 }
 
 - (UICollectionViewLayoutAttributes *)preferredLayoutAttributesFittingAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes
@@ -345,6 +409,24 @@ static NSMutableSet *jsqMessagesCollectionViewCellActions = nil;
                             self.textViewMarginHorizontalSpaceConstraint.constant,
                             self.textViewBottomVerticalSpaceConstraint.constant,
                             self.textViewAvatarHorizontalSpaceConstraint.constant);
+}
+
+- (UIActivityIndicatorView *)activityIndicatorView
+{
+    if (!_activityIndicatorView) {
+        _activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [_activityIndicatorView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    }
+    return _activityIndicatorView;
+}
+
+- (UIImageView *)failIndicatorImageView
+{
+    if (!_failIndicatorImageView) {
+        _failIndicatorImageView = [[UIImageView alloc] initWithImage:[UIImage jsq_imageFromMessagesAssetBundleWithName:@"fail_indicator"]];
+        [_failIndicatorImageView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    }
+    return _failIndicatorImageView;
 }
 
 #pragma mark - Utilities

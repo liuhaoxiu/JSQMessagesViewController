@@ -20,6 +20,13 @@
 
 #import "JSQMessageMediaData.h"
 
+typedef NS_ENUM(NSUInteger, JSQMessageStatus) {
+    JSQMessageStatusReady,
+    JSQMessageStatusSending,
+    JSQMessageStatusSuccess,
+    JSQMessageStatusFail
+};
+
 /**
  *  The `JSQMessageData` protocol defines the common interface through which 
  *  a `JSQMessagesViewController` and `JSQMessagesCollectionView` interact with message model objects.
@@ -34,6 +41,8 @@
 @protocol JSQMessageData <NSObject>
 
 @required
+
+@property (nonatomic) JSQMessageStatus status;
 
 /**
  *  @return A string identifier that uniquely identifies the user who sent the message.
