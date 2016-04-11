@@ -63,7 +63,13 @@
     
     XCTAssertNotNil([UIImage jsq_defaultPlayImage]);
     
-    XCTAssertNotNil([UIImage jsq_imageFromMessagesAssetBundleWithName:@"fail_indicator@2x"]);
+    XCTAssertNotNil([UIImage jsq_imageFromMessagesAssetBundleWithName:@"fail_indicator"]);
+    
+    XCTAssertNotNil([UIImage jsq_imageFromMessagesAssetBundleWithName:@"sound_wave_1"]);
+    
+    XCTAssertNotNil([UIImage jsq_imageFromMessagesAssetBundleWithName:@"sound_wave_2"]);
+
+    XCTAssertNotNil([UIImage jsq_imageFromMessagesAssetBundleWithName:@"sound_wave_3"]);
 }
 
 @end

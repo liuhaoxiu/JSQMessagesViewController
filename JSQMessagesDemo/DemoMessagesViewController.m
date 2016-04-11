@@ -21,7 +21,7 @@
 
 #import "DemoMessagesViewController.h"
 
-@interface DemoMessagesViewController ()<JSQKeyboardDataSource, JSQKeyboardDelegate>
+@interface DemoMessagesViewController ()<UIGestureRecognizerDelegate, JSQKeyboardDataSource, JSQKeyboardDelegate>
 
 @property (weak, nonatomic) IBOutlet JSQMessagesMediaInputToolbar *mediaInputToolbar;
 
@@ -309,8 +309,9 @@
             else if ([copyMediaData isKindOfClass:[JSQAudioMediaItem class]]) {
                 
                 JSQAudioMediaItem *audioItemCopy = [((JSQAudioMediaItem *)copyMediaData) copy];
+                audioItemCopy.appliesMediaViewMaskAsOutgoing = NO;
                 
-                newMediaData =audioItemCopy;
+                newMediaData = audioItemCopy;
             }
             else {
                 NSLog(@"%s error: unrecognized media item", __PRETTY_FUNCTION__);
@@ -367,6 +368,9 @@
                     ((JSQVideoMediaItem *)newMediaData).fileURL = newMediaAttachmentCopy;
                     ((JSQVideoMediaItem *)newMediaData).isReadyToPlay = YES;
                     [self.collectionView reloadData];
+                }
+                else if ([newMediaData isKindOfClass:[JSQAudioMediaItem class]]) {
+                    
                 }
                 else {
                     NSLog(@"%s error: unrecognized media item", __PRETTY_FUNCTION__);
@@ -637,6 +641,8 @@
      */
     JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[super collectionView:collectionView cellForItemAtIndexPath:indexPath];
     
+    cell.tapGestureRecognizer.delegate = self;
+    
     /**
      *  Configure almost *anything* on the cell
      *
@@ -873,6 +879,33 @@
         [self finishSendingMessage];
         return NO;
     }
+    return YES;
+}
+
+#pragma mark - UIGestureRecognizierDelegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    CGPoint touchPt = [gestureRecognizer locationInView:self.collectionView];
+    
+    NSIndexPath *indexPath = [self.collectionView indexPathForItemAtPoint:touchPt];
+    
+    JSQMessage *message = self.demoData.messages[indexPath.row];
+    
+    if (message.isMediaMessage) {
+        id<JSQMessageMediaData> mediaData = message.media;
+        
+        if ([mediaData isKindOfClass:[JSQAudioMediaItem class]]) {
+            JSQMessagesCollectionViewCell *cell = (JSQMessagesCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+            
+            touchPt = [cell convertPoint:touchPt fromView:self.collectionView];
+            
+            if (CGRectContainsPoint(cell.messageBubbleContainerView.frame, touchPt)) {
+                return NO;
+            }
+        }
+    }
+    
     return YES;
 }
 

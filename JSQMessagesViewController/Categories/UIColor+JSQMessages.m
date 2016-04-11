@@ -54,6 +54,14 @@
                            alpha:1.0f];
 }
 
++ (UIColor *)jsq_messageSoundWaveMediumturquoiseColor
+{
+    return [UIColor colorWithRed:111.0/255.0
+                           green:233.0/255.0
+                            blue:226.0/255.0
+                           alpha:1.0];
+}
+
 #pragma mark - Utilities
 
 - (UIColor *)jsq_colorByDarkeningColorWithValue:(CGFloat)value

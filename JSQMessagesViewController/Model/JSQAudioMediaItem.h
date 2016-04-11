@@ -101,14 +101,10 @@
 @interface JSQAudioMediaViewConfiguration : NSObject
 
 /**
- *  A UIImage to be used for the play button. A default value will be used if not set.
+ *  A UIImage to be used represent sound wave. A default value will be used if not set.
  */
-@property (strong, nonatomic, nonnull) UIImage * playButtonImage;
+@property (strong, nonatomic, nonnull) UIImage * soundWaveImage;
 
-/**
- *  A UIImage to be used for the pause button. A default value will be used if not set.
- */
-@property (strong, nonatomic, nonnull) UIImage * pauseButtonImage;
 
 /**
  *  A UIFont to be used for the elapsed time label. A system font will be used if not set.

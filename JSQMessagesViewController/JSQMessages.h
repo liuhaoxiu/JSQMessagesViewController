@@ -29,6 +29,7 @@
 #import "JSQMessagesLoadEarlierHeaderView.h"
 #import "JSQMessagesAudioInputButton.h"
 #import "JSQKeyCell.h"
+#import "JSQMessagesSoundButton.h"
 
 //  Layout
 #import "JSQMessagesBubbleSizeCalculating.h"
