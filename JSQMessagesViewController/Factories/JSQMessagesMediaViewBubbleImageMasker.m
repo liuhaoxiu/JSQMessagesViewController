@@ -20,6 +20,7 @@
 
 #import "JSQMessagesBubbleImageFactory.h"
 
+#import "UIView+JSQMessages.h"
 
 @implementation JSQMessagesMediaViewBubbleImageMasker
 
@@ -46,13 +47,13 @@
 - (void)applyOutgoingBubbleImageMaskToMediaView:(UIView *)mediaView
 {
     JSQMessagesBubbleImage *bubbleImageData = [self.bubbleImageFactory outgoingMessagesBubbleImageWithColor:[UIColor whiteColor]];
-    [self jsq_maskView:mediaView withImage:[bubbleImageData messageBubbleImage]];
+    [mediaView jsq_maskWithImage:[bubbleImageData messageBubbleImage]];
 }
 
 - (void)applyIncomingBubbleImageMaskToMediaView:(UIView *)mediaView
 {
     JSQMessagesBubbleImage *bubbleImageData = [self.bubbleImageFactory incomingMessagesBubbleImageWithColor:[UIColor whiteColor]];
-    [self jsq_maskView:mediaView withImage:[bubbleImageData messageBubbleImage]];
+    [mediaView jsq_maskWithImage:[bubbleImageData messageBubbleImage]];
 }
 
 + (void)applyBubbleImageMaskToMediaView:(UIView *)mediaView isOutgoing:(BOOL)isOutgoing
@@ -65,22 +66,6 @@
     else {
         [masker applyIncomingBubbleImageMaskToMediaView:mediaView];
     }
-}
-
-#pragma mark - Private
-
-- (void)jsq_maskView:(UIView *)view withImage:(UIImage *)image
-{
-    NSParameterAssert(view != nil);
-    NSParameterAssert(image != nil);
-    
-    CGRect baseFrameForMask = view.frame;
-    baseFrameForMask.origin = CGPointZero;
-    
-    UIImageView *imageViewMask = [[UIImageView alloc] initWithImage:image];
-    imageViewMask.frame = CGRectInset(baseFrameForMask, 2.0f, 2.0f);
-
-    view.layer.mask = imageViewMask.layer;
 }
 
 @end

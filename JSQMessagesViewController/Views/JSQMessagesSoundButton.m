@@ -25,9 +25,6 @@
 {
     self = [super initWithFrame:CGRectZero];
     if (self) {
-        
-        self.backgroundColor = [UIColor jsq_messageBubbleLightGrayColor];
-        
         _outgoing = outgoing;
         
         UIImage *outgoingImage = [UIImage jsq_imageFromMessagesAssetBundleWithName:@"sound_wave_3"];
@@ -107,10 +104,10 @@
 {
     if (_outgoing) {
         // Right align sound images
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:_soundImageView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1.0 constant:-8.0]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:_soundImageView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeRight multiplier:1.0 constant:0]];
     }
     else {
-        [self addConstraint:[NSLayoutConstraint constraintWithItem:_soundImageView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:8.0]];
+        [self addConstraint:[NSLayoutConstraint constraintWithItem:_soundImageView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeLeft multiplier:1.0 constant:0]];
     }
     
     [self addConstraint:[NSLayoutConstraint constraintWithItem:_soundImageView attribute:NSLayoutAttributeWidth relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeHeight multiplier:1.0 constant:-8.0]];

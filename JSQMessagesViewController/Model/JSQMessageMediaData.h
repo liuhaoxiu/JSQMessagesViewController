@@ -19,6 +19,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+@class JSQMessagesMediaViewBubbleImageMasker;
+
 /**
  *  The `JSQMessageMediaData` protocol defines the common interface through which
  *  a `JSQMessagesViewController` and `JSQMessagesCollectionView` interact with media message model objects.
@@ -35,6 +37,18 @@
  *  @see JSQVideoMediaItem.
  */
 @protocol JSQMessageMediaData <NSObject>
+
+@optional
+
+/**
+ * Outgoing bubble image masker for media view.
+ */
+@property (nonatomic) UIImage *mediaViewOutgoingBubbleMaskImage;
+
+/**
+ * Incoming bubble image masker for media view.
+ */
+@property (nonatomic) UIImage *mediaViewIncomingBubbleMaskImage;
 
 @required
 

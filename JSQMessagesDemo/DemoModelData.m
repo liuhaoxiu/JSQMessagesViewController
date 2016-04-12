@@ -19,7 +19,9 @@
 #import "DemoModelData.h"
 
 #import "NSUserDefaults+DemoSettings.h"
-
+#import "UIColor+JSQMessages.h"
+#import "UIImage+JSQMessages.h"
+#import "JSQMessagesBubbleImage+Helper.h"
 
 /**
  *  This is for demo/testing purposes only.
@@ -82,10 +84,10 @@
          *  Be sure to create your bubble images one time and reuse them for good performance.
          *
          */
-        JSQMessagesBubbleImageFactory *bubbleFactory = [[JSQMessagesBubbleImageFactory alloc] init];
+    
+        self.outgoingBubbleImageData = [JSQMessagesBubbleImage jsq_outgoingBubbleImage];
         
-        self.outgoingBubbleImageData = [bubbleFactory outgoingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleLightGrayColor]];
-        self.incomingBubbleImageData = [bubbleFactory incomingMessagesBubbleImageWithColor:[UIColor jsq_messageBubbleGreenColor]];
+        self.incomingBubbleImageData = [JSQMessagesBubbleImage jsq_incomingBubbleImage];
     }
     
     return self;
@@ -169,6 +171,10 @@
 //    NSString * sample = [[NSBundle mainBundle] pathForResource:@"LongM4A" ofType:@"m4a"];
     NSData * audioData = [NSData dataWithContentsOfFile:sample];
     JSQAudioMediaItem *audioItem = [[JSQAudioMediaItem alloc] initWithData:audioData];
+    
+    audioItem.mediaViewOutgoingBubbleMaskImage = [JSQMessagesBubbleImage jsq_outgoingBubbleImage].messageBubbleImage;
+    audioItem.mediaViewIncomingBubbleMaskImage = [JSQMessagesBubbleImage jsq_incomingBubbleImage].messageBubbleImage;
+    
     JSQMessage *audioMessage = [JSQMessage messageWithSenderId:kJSQDemoAvatarIdSquires
                                                    displayName:kJSQDemoAvatarDisplayNameSquires
                                                          media:audioItem];
@@ -179,6 +185,10 @@
 - (JSQMessage *)fakePhotoMediaMessage
 {
     JSQPhotoMediaItem *photoItem = [[JSQPhotoMediaItem alloc] initWithImage:[UIImage imageNamed:@"goldengate"]];
+    
+    photoItem.mediaViewOutgoingBubbleMaskImage = [JSQMessagesBubbleImage jsq_outgoingBubbleImage].messageBubbleImage;
+    photoItem.mediaViewIncomingBubbleMaskImage = [JSQMessagesBubbleImage jsq_incomingBubbleImage].messageBubbleImage;
+    
     JSQMessage *photoMessage = [JSQMessage messageWithSenderId:kJSQDemoAvatarIdSquires
                                                    displayName:kJSQDemoAvatarDisplayNameSquires
                                                          media:photoItem];
@@ -192,6 +202,10 @@
     JSQLocationMediaItem *locationItem = [[JSQLocationMediaItem alloc] init];
     [locationItem setLocation:ferryBuildingInSF withCompletionHandler:completion];
     
+    
+    locationItem.mediaViewOutgoingBubbleMaskImage = [JSQMessagesBubbleImage jsq_outgoingBubbleImage].messageBubbleImage;
+    locationItem.mediaViewIncomingBubbleMaskImage = [JSQMessagesBubbleImage jsq_incomingBubbleImage].messageBubbleImage;
+    
     JSQMessage *locationMessage = [JSQMessage messageWithSenderId:kJSQDemoAvatarIdSquires
                                                       displayName:kJSQDemoAvatarDisplayNameSquires
                                                             media:locationItem];
@@ -204,6 +218,10 @@
     NSURL *videoURL = [NSURL URLWithString:@"file://"];
     
     JSQVideoMediaItem *videoItem = [[JSQVideoMediaItem alloc] initWithFileURL:videoURL isReadyToPlay:YES];
+    
+    videoItem.mediaViewOutgoingBubbleMaskImage = [JSQMessagesBubbleImage jsq_outgoingBubbleImage].messageBubbleImage;
+    videoItem.mediaViewIncomingBubbleMaskImage = [JSQMessagesBubbleImage jsq_incomingBubbleImage].messageBubbleImage;
+    
     JSQMessage *videoMessage = [JSQMessage messageWithSenderId:kJSQDemoAvatarIdSquires
                                                    displayName:kJSQDemoAvatarDisplayNameSquires
                                                          media:videoItem];

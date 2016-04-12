@@ -81,10 +81,17 @@
 
 - (JSQMessagesBubbleImage *)jsq_messagesBubbleImageWithColor:(UIColor *)color flippedForIncoming:(BOOL)flippedForIncoming
 {
-    NSParameterAssert(color != nil);
+    UIImage *normalBubble;
+    UIImage *highlightedBubble;
     
-    UIImage *normalBubble = [self.bubbleImage jsq_imageMaskedWithColor:color];
-    UIImage *highlightedBubble = [self.bubbleImage jsq_imageMaskedWithColor:[color jsq_colorByDarkeningColorWithValue:0.12f]];
+    if (color) {
+        normalBubble = [self.bubbleImage jsq_imageMaskedWithColor:color];
+        highlightedBubble = [self.bubbleImage jsq_imageMaskedWithColor:[color jsq_colorByDarkeningColorWithValue:0.12f]];
+    }
+    else {
+        normalBubble = self.bubbleImage;
+        highlightedBubble = self.bubbleImage;
+    }
     
     if (flippedForIncoming) {
         normalBubble = [self jsq_horizontallyFlippedImageFromImage:normalBubble];

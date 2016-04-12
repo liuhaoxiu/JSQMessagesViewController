@@ -16,6 +16,8 @@
 //  Released under an MIT license: http://opensource.org/licenses/MIT
 //
 
+#import "UIView+JSQMessages.h"
+
 #import "JSQPhotoMediaItem.h"
 
 #import "JSQMessagesMediaPlaceholderView.h"
@@ -77,8 +79,30 @@
         imageView.frame = CGRectMake(0.0f, 0.0f, size.width, size.height);
         imageView.contentMode = UIViewContentModeScaleAspectFill;
         imageView.clipsToBounds = YES;
-        [JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:imageView isOutgoing:self.appliesMediaViewMaskAsOutgoing];
+        
         self.cachedImageView = imageView;
+
+        SEL selector = self.appliesMediaViewMaskAsOutgoing ? @selector(mediaViewOutgoingBubbleMaskImage) : @selector(mediaViewIncomingBubbleMaskImage);
+        
+        if ([self respondsToSelector:selector]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+            UIImage *maskImage = [self performSelector:selector];
+#pragma clang diagnostic pop
+            if (maskImage) {
+                UIImageView *mediaViewContainer = [[UIImageView alloc] initWithFrame:imageView.frame];
+                mediaViewContainer.image = maskImage;
+                
+                imageView.frame = CGRectInset(imageView.frame, 10.0f, 4.0f);
+                
+                [mediaViewContainer addSubview:imageView];
+                
+                self.cachedImageView = mediaViewContainer;
+            }
+        }
+        else {
+            [JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:imageView isOutgoing:self.appliesMediaViewMaskAsOutgoing];
+        }        
     }
     
     return self.cachedImageView;
@@ -125,6 +149,8 @@
 {
     JSQPhotoMediaItem *copy = [[JSQPhotoMediaItem allocWithZone:zone] initWithImage:self.image];
     copy.appliesMediaViewMaskAsOutgoing = self.appliesMediaViewMaskAsOutgoing;
+    copy.mediaViewOutgoingBubbleMaskImage = self.mediaViewOutgoingBubbleMaskImage.copy;
+    copy.mediaViewIncomingBubbleMaskImage = self.mediaViewIncomingBubbleMaskImage.copy;
     return copy;
 }
 

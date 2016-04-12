@@ -39,4 +39,16 @@
     [self jsq_pinSubview:subview toEdge:NSLayoutAttributeTrailing];
 }
 
+- (void)jsq_maskWithImage:(UIImage *)image
+{
+    NSParameterAssert(image != nil);
+    CGRect baseFrameForMask = self.frame;
+    baseFrameForMask.origin = CGPointZero;
+    
+    UIImageView *imageViewMask = [[UIImageView alloc] initWithImage:image];
+    imageViewMask.frame = CGRectInset(baseFrameForMask, 2.0f, 2.0f);
+    
+    self.layer.mask = imageViewMask.layer;
+}
+
 @end

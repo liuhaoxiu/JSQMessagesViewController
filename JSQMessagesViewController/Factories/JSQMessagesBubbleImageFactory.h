@@ -56,7 +56,7 @@
  *  The `messageBubbleImage` property of the `JSQMessagesBubbleImage` is configured with a flat bubble image, masked to the given color.
  *  The `messageBubbleHighlightedImage` property is configured similarly, but with a darkened version of the given color.
  *
- *  @param color The color of the bubble image in the image view. This value must not be `nil`.
+ *  @param color The color of the bubble image in the image view.
  *
  *  @return An initialized `JSQMessagesBubbleImage` object if created successfully, `nil` otherwise.
  */
@@ -67,7 +67,7 @@
  *  The `messageBubbleImage` property of the `JSQMessagesBubbleImage` is configured with a flat bubble image, masked to the given color.
  *  The `messageBubbleHighlightedImage` property is configured similarly, but with a darkened version of the given color.
  *
- *  @param color The color of the bubble image in the image view. This value must not be `nil`.
+ *  @param color The color of the bubble image in the image view.
  *
  *  @return An initialized `JSQMessagesBubbleImage` object if created successfully, `nil` otherwise.
  */

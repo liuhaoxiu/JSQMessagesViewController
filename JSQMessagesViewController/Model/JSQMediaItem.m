@@ -16,6 +16,8 @@
 //  Released under an MIT license: http://opensource.org/licenses/MIT
 //
 
+#import "UIView+JSQMessages.h"
+
 #import "JSQMediaItem.h"
 
 #import "JSQMessagesMediaPlaceholderView.h"
@@ -30,6 +32,9 @@
 
 
 @implementation JSQMediaItem
+
+@synthesize mediaViewOutgoingBubbleMaskImage = _mediaViewOutgoingBubbleMaskImage;
+@synthesize mediaViewIncomingBubbleMaskImage = _mediaViewIncomingBubbleMaskImage;
 
 #pragma mark - Initialization
 
@@ -98,7 +103,20 @@
         CGSize size = [self mediaViewDisplaySize];
         UIView *view = [JSQMessagesMediaPlaceholderView viewWithActivityIndicator];
         view.frame = CGRectMake(0.0f, 0.0f, size.width, size.height);
-        [JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:view isOutgoing:self.appliesMediaViewMaskAsOutgoing];
+        
+        
+        SEL selector = self.appliesMediaViewMaskAsOutgoing ? @selector(mediaViewOutgoingBubbleMaskImage) : @selector(mediaViewIncomingBubbleMaskImage);
+        
+        if ([self respondsToSelector:selector]) {
+            UIImage *maskImage = [self performSelector:selector];
+            if (maskImage) {
+                [view jsq_maskWithImage:maskImage];
+            }
+        }
+        else {
+            [JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:view isOutgoing:self.appliesMediaViewMaskAsOutgoing];
+        }
+        
         self.cachedPlaceholderView = view;
     }
     

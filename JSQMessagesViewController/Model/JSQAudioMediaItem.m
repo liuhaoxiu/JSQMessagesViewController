@@ -211,7 +211,26 @@
         [_soundButton addTarget:self action:@selector(onPlayButton:) forControlEvents:UIControlEventValueChanged];
         [playView addSubview:_soundButton];
         
-        [JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:_soundButton isOutgoing:self.appliesMediaViewMaskAsOutgoing];
+        SEL selector = self.appliesMediaViewMaskAsOutgoing ? @selector(mediaViewOutgoingBubbleMaskImage) : @selector(mediaViewIncomingBubbleMaskImage);
+        
+        if ([self respondsToSelector:selector]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+            UIImage *maskImage = [self performSelector:selector];
+#pragma clang diagnostic pop
+            if (maskImage) {
+                
+                UIImageView *container = [[UIImageView alloc] initWithFrame:_soundButton.frame];
+                container.image = maskImage;
+                
+                _soundButton.frame = CGRectInset(_soundButton.frame, 8.0f, 4.0f);
+                
+                [playView insertSubview:container belowSubview:_soundButton];
+            }
+        }
+        else {
+            [JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:_soundButton isOutgoing:self.appliesMediaViewMaskAsOutgoing];
+        }
 
         self.cachedMediaView = playView;
     }
@@ -274,6 +293,9 @@
     copy = [[[self class] allocWithZone:zone] initWithData:self.audioData
                                         audioViewConfiguration:_audioViewConfiguration];
     copy.appliesMediaViewMaskAsOutgoing = self.appliesMediaViewMaskAsOutgoing;
+    copy.mediaViewOutgoingBubbleMaskImage = self.mediaViewOutgoingBubbleMaskImage.copy;
+    copy.mediaViewIncomingBubbleMaskImage = self.mediaViewIncomingBubbleMaskImage.copy;
+    
     return copy;
 }
 
