@@ -28,6 +28,8 @@
 @property (nonatomic) NSArray<id<JSQKey>> *keys;
 @property (nonatomic) NSMutableArray *sendQueue;
 @property (nonatomic) NSTimer *sendTimer;
+@property (nonatomic) NSTimer *progressTimer;
+@property (nonatomic) NSIndexPath *sendingPhotoMessageIndexPath;
 
 @end
 
@@ -269,8 +271,12 @@
             id<JSQMessageMediaData> copyMediaData = copyMessage.media;
             
             if ([copyMediaData isKindOfClass:[JSQPhotoMediaItem class]]) {
+
                 JSQPhotoMediaItem *photoItemCopy = [((JSQPhotoMediaItem *)copyMediaData) copy];
                 photoItemCopy.appliesMediaViewMaskAsOutgoing = NO;
+                
+                [photoItemCopy updateSendingProgress:0];
+                
                 newMediaAttachmentCopy = [UIImage imageWithCGImage:photoItemCopy.image.CGImage];
                 
                 /**
@@ -357,6 +363,10 @@
                 
                 if ([newMediaData isKindOfClass:[JSQPhotoMediaItem class]]) {
                     ((JSQPhotoMediaItem *)newMediaData).image = newMediaAttachmentCopy;
+                    self.sendingPhotoMessageIndexPath = [NSIndexPath indexPathForRow:self.demoData.messages.count - 1 inSection:0];
+                    
+                    self.progressTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(updateProgress) userInfo:nil repeats:YES];
+
                     [self.collectionView reloadData];
                 }
                 else if ([newMediaData isKindOfClass:[JSQLocationMediaItem class]]) {
@@ -418,6 +428,25 @@
         
         [self.sendQueue removeObjectAtIndex:randomIndex];
     }
+}
+
+- (void)updateProgress
+{
+    static CGFloat progress = 0;
+    
+    if (fabs(progress - 1) < 0.01) {
+        progress = 0;
+        
+        self.sendingPhotoMessageIndexPath = nil;
+        [self.progressTimer invalidate];
+        return;
+    }
+    
+    progress += 0.1;
+    
+    JSQMessage *msg = [self.demoData.messages objectAtIndex:self.sendingPhotoMessageIndexPath.item];
+    JSQPhotoMediaItem *photoMediaItem = (JSQPhotoMediaItem *)msg.media;
+    [photoMediaItem updateSendingProgress:progress];
 }
 
 #pragma mark - JSQMessagesViewController method overrides
@@ -733,9 +762,19 @@
     
     switch (indexPath.row) {
         case 0:{
+            
+            self.sendingPhotoMessageIndexPath = [NSIndexPath indexPathForRow:self.demoData.messages.count inSection:0];
+            
             message = [self.demoData fakePhotoMediaMessage];
             message.status = JSQMessageStatusSending;
+            
+            JSQPhotoMediaItem *photoMediaItem = (JSQPhotoMediaItem *)message.media;
+            [photoMediaItem updateSendingProgress:0];
+            
             [self.demoData.messages addObject:message];
+            
+            // Progress timer
+            self.progressTimer = [NSTimer scheduledTimerWithTimeInterval:0.2 target:self selector:@selector(updateProgress) userInfo:nil repeats:YES];
             
             break;
         }

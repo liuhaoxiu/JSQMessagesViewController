@@ -39,6 +39,12 @@
     [self jsq_pinSubview:subview toEdge:NSLayoutAttributeTrailing];
 }
 
+- (void)jsq_centerSubview:(UIView *)subview
+{
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:subview attribute:NSLayoutAttributeCenterX relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterX multiplier:1.0 constant:0]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:subview attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1.0 constant:0]];
+}
+
 - (void)jsq_maskWithImage:(UIImage *)image
 {
     NSParameterAssert(image != nil);

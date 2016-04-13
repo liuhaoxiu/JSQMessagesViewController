@@ -104,20 +104,28 @@
         UIView *view = [JSQMessagesMediaPlaceholderView viewWithActivityIndicator];
         view.frame = CGRectMake(0.0f, 0.0f, size.width, size.height);
         
+        self.cachedPlaceholderView = view;
         
         SEL selector = self.appliesMediaViewMaskAsOutgoing ? @selector(mediaViewOutgoingBubbleMaskImage) : @selector(mediaViewIncomingBubbleMaskImage);
         
         if ([self respondsToSelector:selector]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
             UIImage *maskImage = [self performSelector:selector];
+#pragma clang diagnostic pop
             if (maskImage) {
-                [view jsq_maskWithImage:maskImage];
+                UIImageView *container = [[UIImageView alloc] initWithFrame:view.frame];
+                container.image = maskImage;
+                [container addSubview:view];
+                
+                view.frame = CGRectInset(view.frame, 8.0f, 4.0f);
+                
+                self.cachedPlaceholderView = container;
             }
         }
         else {
             [JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:view isOutgoing:self.appliesMediaViewMaskAsOutgoing];
         }
-        
-        self.cachedPlaceholderView = view;
     }
     
     return self.cachedPlaceholderView;

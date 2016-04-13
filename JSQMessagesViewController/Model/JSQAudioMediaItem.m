@@ -217,7 +217,6 @@
             UIImage *maskImage = [self performSelector:selector];
 #pragma clang diagnostic pop
             if (maskImage) {
-                
                 UIImageView *container = [[UIImageView alloc] initWithFrame:_soundButton.frame];
                 container.image = maskImage;
                 

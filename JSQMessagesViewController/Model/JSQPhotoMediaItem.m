@@ -27,6 +27,10 @@
 @interface JSQPhotoMediaItem ()
 
 @property (strong, nonatomic) UIImageView *cachedImageView;
+@property (strong, nonatomic) UIView *progressView;
+@property (strong, nonatomic) UILabel *progressLabel;
+@property (strong, nonatomic) NSLayoutConstraint *progressViewHeightConstraint;
+@property (strong, nonatomic) UIImageView *imageView;
 
 @end
 
@@ -51,6 +55,63 @@
     _cachedImageView = nil;
 }
 
+#pragma mark - Public
+
+- (void)updateSendingProgress:(CGFloat)progress
+{
+    if (progress < 0) {
+        return;
+    }
+    
+    progress = MIN(progress, 1); // Range [0, 1]
+    
+    if (self.progressViewHeightConstraint) {
+        self.progressViewHeightConstraint.constant = CGRectGetHeight(self.imageView.frame) * (1 - progress);
+        
+        [UIView animateWithDuration:0.1 animations:^{
+            [self.imageView layoutIfNeeded];
+        } completion:^(BOOL finished) {
+            if (fabs(progress - 1) < 0.01) {
+                [_progressView removeFromSuperview];
+                [_progressLabel removeFromSuperview];
+            }
+        }];
+    }
+    
+    // Create progress view if need
+    if (!_progressView) {
+        _progressView = [[UIView alloc] initWithFrame:CGRectZero];
+        _progressView.backgroundColor = [UIColor blackColor];
+        _progressView.alpha = 0.3;
+        [_progressView setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [self.imageView addSubview:_progressView];
+        
+        [self.imageView jsq_pinSubview:_progressView toEdge:NSLayoutAttributeLeft];
+        [self.imageView jsq_pinSubview:_progressView toEdge:NSLayoutAttributeRight];
+        [self.imageView jsq_pinSubview:_progressView toEdge:NSLayoutAttributeTop];
+        
+        self.progressViewHeightConstraint = [NSLayoutConstraint constraintWithItem:_progressView attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:CGRectGetHeight(self.imageView.frame) * (1 - progress)];
+        [self.imageView addConstraint:self.progressViewHeightConstraint];
+        
+        [self.imageView layoutIfNeeded];
+    }
+    
+    // Create progress label
+    if (!_progressLabel) {
+        _progressLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+        _progressLabel.font = [UIFont systemFontOfSize:24.0];
+        _progressLabel.textColor = [UIColor whiteColor];
+        
+        [_progressLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+        [self.imageView addSubview:_progressLabel];
+        [self.imageView jsq_centerSubview:_progressLabel];
+        
+        [self.imageView layoutIfNeeded];
+    }
+    
+    _progressLabel.text = [NSString stringWithFormat:@"%.f%%", progress * 100];
+}
+
 #pragma mark - Setters
 
 - (void)setImage:(UIImage *)image
@@ -65,6 +126,20 @@
     _cachedImageView = nil;
 }
 
+#pragma mark - Getter
+
+- (UIImageView *)imageView
+{
+    if (!_imageView) {
+        CGSize size = [self mediaViewDisplaySize];
+        _imageView = [[UIImageView alloc] initWithImage:self.image];
+        _imageView.frame = CGRectMake(0.0f, 0.0f, size.width, size.height);
+        _imageView.contentMode = UIViewContentModeScaleAspectFill;
+        _imageView.clipsToBounds = YES;
+    }
+    return _imageView;
+}
+
 #pragma mark - JSQMessageMediaData protocol
 
 - (UIView *)mediaView
@@ -74,13 +149,8 @@
     }
     
     if (self.cachedImageView == nil) {
-        CGSize size = [self mediaViewDisplaySize];
-        UIImageView *imageView = [[UIImageView alloc] initWithImage:self.image];
-        imageView.frame = CGRectMake(0.0f, 0.0f, size.width, size.height);
-        imageView.contentMode = UIViewContentModeScaleAspectFill;
-        imageView.clipsToBounds = YES;
         
-        self.cachedImageView = imageView;
+        self.cachedImageView = self.imageView;
 
         SEL selector = self.appliesMediaViewMaskAsOutgoing ? @selector(mediaViewOutgoingBubbleMaskImage) : @selector(mediaViewIncomingBubbleMaskImage);
         
@@ -90,18 +160,18 @@
             UIImage *maskImage = [self performSelector:selector];
 #pragma clang diagnostic pop
             if (maskImage) {
-                UIImageView *mediaViewContainer = [[UIImageView alloc] initWithFrame:imageView.frame];
+                UIImageView *mediaViewContainer = [[UIImageView alloc] initWithFrame:self.imageView.frame];
                 mediaViewContainer.image = maskImage;
                 
-                imageView.frame = CGRectInset(imageView.frame, 10.0f, 4.0f);
+                self.imageView.frame = CGRectInset(self.imageView.frame, 10.0f, 4.0f);
                 
-                [mediaViewContainer addSubview:imageView];
+                [mediaViewContainer addSubview:self.imageView];
                 
                 self.cachedImageView = mediaViewContainer;
             }
         }
         else {
-            [JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:imageView isOutgoing:self.appliesMediaViewMaskAsOutgoing];
+            [JSQMessagesMediaViewBubbleImageMasker applyBubbleImageMaskToMediaView:self.imageView isOutgoing:self.appliesMediaViewMaskAsOutgoing];
         }        
     }
     

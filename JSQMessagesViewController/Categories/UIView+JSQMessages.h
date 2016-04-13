@@ -35,6 +35,8 @@
  */
 - (void)jsq_pinAllEdgesOfSubview:(UIView *)subview;
 
+- (void)jsq_centerSubview:(UIView *)subview;
+
 - (void)jsq_maskWithImage:(UIImage *)image;
 
 @end

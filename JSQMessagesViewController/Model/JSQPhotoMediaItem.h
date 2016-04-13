@@ -44,4 +44,6 @@
  */
 - (instancetype)initWithImage:(UIImage *)image;
 
+- (void)updateSendingProgress:(CGFloat)progress;
+
 @end
