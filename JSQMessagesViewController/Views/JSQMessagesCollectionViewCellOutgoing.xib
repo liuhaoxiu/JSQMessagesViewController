@@ -61,7 +61,7 @@
                         </constraints>
                     </view>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X89-B1-aAd" userLabel="Avatar container">
-                        <rect key="frame" x="286" y="100" width="34" height="34"/>
+                        <rect key="frame" x="286" y="40" width="34" height="34"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="y9b-D9-Q7W" userLabel="Avatar Image View">
                                 <rect key="frame" x="0.0" y="0.0" width="34" height="34"/>
@@ -112,6 +112,7 @@
                 <constraint firstItem="2zh-vR-QJW" firstAttribute="leading" secondItem="cE9-Fg-iLM" secondAttribute="trailing" id="70y-Vx-3Go"/>
                 <constraint firstAttribute="trailing" secondItem="jxM-YD-sVG" secondAttribute="trailing" id="AwY-g7-f1T"/>
                 <constraint firstItem="2zh-vR-QJW" firstAttribute="leading" secondItem="iUF-r9-hKw" secondAttribute="trailing" id="DBL-dQ-Vgq"/>
+                <constraint firstItem="X89-B1-aAd" firstAttribute="top" secondItem="2zh-vR-QJW" secondAttribute="top" id="GfS-q7-6iq"/>
                 <constraint firstItem="jxM-YD-sVG" firstAttribute="top" secondItem="23f-xH-rkY" secondAttribute="top" id="HYT-Tw-whz"/>
                 <constraint firstAttribute="trailing" secondItem="X89-B1-aAd" secondAttribute="trailing" id="KLt-Ix-wDa"/>
                 <constraint firstItem="7Uc-dI-YDD" firstAttribute="top" secondItem="2zh-vR-QJW" secondAttribute="bottom" id="Ngq-ew-t2K"/>
@@ -119,7 +120,6 @@
                 <constraint firstItem="7Uc-dI-YDD" firstAttribute="leading" secondItem="23f-xH-rkY" secondAttribute="leading" id="fiS-g3-X16"/>
                 <constraint firstAttribute="bottom" secondItem="7Uc-dI-YDD" secondAttribute="bottom" id="gXo-9b-b1W"/>
                 <constraint firstAttribute="trailing" secondItem="p52-YN-yLu" secondAttribute="trailing" id="gen-N0-uZj"/>
-                <constraint firstItem="7Uc-dI-YDD" firstAttribute="top" secondItem="X89-B1-aAd" secondAttribute="bottom" id="iiF-tn-5Ir"/>
                 <constraint firstItem="p52-YN-yLu" firstAttribute="top" secondItem="jxM-YD-sVG" secondAttribute="bottom" id="jBD-JV-AWk"/>
                 <constraint firstItem="jxM-YD-sVG" firstAttribute="leading" secondItem="23f-xH-rkY" secondAttribute="leading" id="qeB-G5-1Wq"/>
                 <constraint firstItem="p52-YN-yLu" firstAttribute="leading" secondItem="23f-xH-rkY" secondAttribute="leading" id="tTj-Mp-0va"/>
