@@ -22,6 +22,7 @@
 @implementation JSQMessage
 
 @synthesize status = _status;
+@synthesize readed = _readed;
 
 #pragma mark - Initialization
 

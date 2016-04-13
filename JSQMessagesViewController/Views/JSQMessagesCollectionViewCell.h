@@ -157,6 +157,8 @@
 
 @property (weak, nonatomic, readonly) UIView *statusContainerView;
 
+@property (weak, nonatomic, readonly) UIImageView *unreadFlagImageView;
+
 /**
  *  The media view of the cell. This view displays the contents of a media message.
  *
@@ -171,6 +173,8 @@
 @property (weak, nonatomic, readonly) UITapGestureRecognizer *tapGestureRecognizer;
 
 - (void)configureWithStatus:(JSQMessageStatus)status;
+
+- (void)markAsRead:(BOOL)read;
 
 #pragma mark - Class methods
 

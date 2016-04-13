@@ -44,6 +44,8 @@ typedef NS_ENUM(NSUInteger, JSQMessageStatus) {
 
 @property (nonatomic) JSQMessageStatus status;
 
+@property (nonatomic, getter=isReaded) BOOL readed;
+
 /**
  *  @return A string identifier that uniquely identifies the user who sent the message.
  *

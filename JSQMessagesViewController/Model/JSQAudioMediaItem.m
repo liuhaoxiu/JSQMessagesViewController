@@ -16,11 +16,7 @@
 
 @property (strong, nonatomic) UIView *          cachedMediaView;
 
-@property (strong, nonatomic) UIButton *        playButton;
-
-@property (strong, nonatomic) UIProgressView *  progressView;
 @property (strong, nonatomic) UILabel *         progressLabel;
-@property (strong, nonatomic) NSTimer *         progressTimer;
 
 @property (strong, nonatomic) AVAudioPlayer *   audioPlayer;
 
@@ -69,8 +65,6 @@
     [_audioPlayer stop];
     _audioPlayer = nil;
     
-    _playButton = nil;
-    _progressView = nil;
     _progressLabel = nil;
     
     _cachedMediaView = nil;
@@ -146,6 +140,10 @@
     
     // set progress to full, then fade back to the default state
     [self.soundButton stopAnimating];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(audioMediaItemDidFinishPlaying:sucessfully:)]) {
+        [self.delegate audioMediaItemDidFinishPlaying:self sucessfully:flag];
+    }
 }
 
 #pragma mark - JSQMessageMediaData protocol
@@ -309,7 +307,7 @@
     if (self) {
         _controlPadding = 6;
         
-        _controlInsets = UIEdgeInsetsMake(6, 6, 6, 18);
+        _controlInsets = UIEdgeInsetsZero;
         
         _labelFont = [UIFont systemFontOfSize:12];
         

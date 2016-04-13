@@ -21,7 +21,7 @@
 
 #import "DemoMessagesViewController.h"
 
-@interface DemoMessagesViewController ()<UIGestureRecognizerDelegate, JSQKeyboardDataSource, JSQKeyboardDelegate>
+@interface DemoMessagesViewController ()<UIGestureRecognizerDelegate, JSQKeyboardDataSource, JSQKeyboardDelegate, JSQAudioMediaItemDelegate>
 
 @property (weak, nonatomic) IBOutlet JSQMessagesMediaInputToolbar *mediaInputToolbar;
 
@@ -666,13 +666,51 @@
         cell.textView.linkTextAttributes = @{ NSForegroundColorAttributeName : cell.textView.textColor,
                                               NSUnderlineStyleAttributeName : @(NSUnderlineStyleSingle | NSUnderlinePatternSolid) };
     }
+    else {
+        id<JSQMessageMediaData> mediaData = msg.media;
+        if ([mediaData isKindOfClass:[JSQAudioMediaItem class]]) {
+            JSQAudioMediaItem *audioMediaItem = (JSQAudioMediaItem *)mediaData;
+            audioMediaItem.delegate = self;
+            
+            [cell markAsRead:msg.isReaded];
+        }
+    }
     
     return cell;
 }
 
 
 
-#pragma mark - UICollectionView Delegate
+#pragma mark - JSQAudioMediaItemDelegate
+
+- (void)audioMediaItem:(JSQAudioMediaItem *)audioMediaItem didChangeAudioCategory:(NSString *)category options:(AVAudioSessionCategoryOptions)options error:(NSError *)error
+{ }
+
+- (void)audioMediaItemDidFinishPlaying:(JSQAudioMediaItem *)audioMediaItem sucessfully:(BOOL)flag
+{
+    __block NSUInteger index = NSNotFound;
+    
+    [self.demoData.messages enumerateObjectsUsingBlock:^(JSQMessage * _Nonnull msg, NSUInteger idx, BOOL * _Nonnull stop) {
+        if (msg.isMediaMessage) {
+            id<JSQMessageMediaData> mediaData = msg.media;
+            if ([mediaData isKindOfClass:[JSQAudioMediaItem class]]) {
+                JSQAudioMediaItem *audio = (JSQAudioMediaItem *)mediaData;
+                if ([audio isEqual:audioMediaItem]) {
+                    index = idx;
+                    
+                    msg.readed = YES;
+                    
+                    *stop = YES;
+                }
+            }
+        }
+    }];
+    
+    if (index != NSNotFound) {
+        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+        [self.collectionView reloadItemsAtIndexPaths:@[indexPath]];
+    }
+}
 
 #pragma mark - JSQKeyboardDataSource
 

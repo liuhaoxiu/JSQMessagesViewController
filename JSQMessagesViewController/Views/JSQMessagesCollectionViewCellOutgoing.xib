@@ -95,6 +95,13 @@
                             <constraint firstAttribute="height" constant="40" id="aL8-kZ-LOF"/>
                         </constraints>
                     </view>
+                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="iUF-r9-hKw">
+                        <rect key="frame" x="32" y="40" width="8" height="8"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="8" id="7lA-YO-Xsj"/>
+                            <constraint firstAttribute="width" constant="8" id="Hm6-qF-cSg"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             </view>
@@ -104,9 +111,11 @@
                 <constraint firstItem="cE9-Fg-iLM" firstAttribute="centerY" secondItem="2zh-vR-QJW" secondAttribute="centerY" id="3Xy-Vl-7A5"/>
                 <constraint firstItem="2zh-vR-QJW" firstAttribute="leading" secondItem="cE9-Fg-iLM" secondAttribute="trailing" id="70y-Vx-3Go"/>
                 <constraint firstAttribute="trailing" secondItem="jxM-YD-sVG" secondAttribute="trailing" id="AwY-g7-f1T"/>
+                <constraint firstItem="2zh-vR-QJW" firstAttribute="leading" secondItem="iUF-r9-hKw" secondAttribute="trailing" id="DBL-dQ-Vgq"/>
                 <constraint firstItem="jxM-YD-sVG" firstAttribute="top" secondItem="23f-xH-rkY" secondAttribute="top" id="HYT-Tw-whz"/>
                 <constraint firstAttribute="trailing" secondItem="X89-B1-aAd" secondAttribute="trailing" id="KLt-Ix-wDa"/>
                 <constraint firstItem="7Uc-dI-YDD" firstAttribute="top" secondItem="2zh-vR-QJW" secondAttribute="bottom" id="Ngq-ew-t2K"/>
+                <constraint firstItem="iUF-r9-hKw" firstAttribute="top" secondItem="2zh-vR-QJW" secondAttribute="top" id="dNC-Or-7Ii"/>
                 <constraint firstItem="7Uc-dI-YDD" firstAttribute="leading" secondItem="23f-xH-rkY" secondAttribute="leading" id="fiS-g3-X16"/>
                 <constraint firstAttribute="bottom" secondItem="7Uc-dI-YDD" secondAttribute="bottom" id="gXo-9b-b1W"/>
                 <constraint firstAttribute="trailing" secondItem="p52-YN-yLu" secondAttribute="trailing" id="gen-N0-uZj"/>
@@ -137,6 +146,7 @@
                 <outlet property="textViewBottomVerticalSpaceConstraint" destination="UbF-Bl-Q7v" id="KHP-49-3u4"/>
                 <outlet property="textViewMarginHorizontalSpaceConstraint" destination="7rI-Nc-AK3" id="ciu-j6-IpH"/>
                 <outlet property="textViewTopVerticalSpaceConstraint" destination="RiG-21-Bqc" id="i3j-z0-feE"/>
+                <outlet property="unreadFlagImageView" destination="iUF-r9-hKw" id="YB7-Gb-C3b"/>
             </connections>
             <point key="canvasLocation" x="371" y="145"/>
         </collectionViewCell>

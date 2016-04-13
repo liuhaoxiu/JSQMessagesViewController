@@ -44,6 +44,8 @@ static NSMutableSet *jsqMessagesCollectionViewCellActions = nil;
 
 @property (weak, nonatomic) IBOutlet UIView *statusContainerView;
 
+@property (weak, nonatomic) IBOutlet UIImageView *unreadFlagImageView;
+
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *messageBubbleContainerWidthConstraint;
 
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *textViewTopVerticalSpaceConstraint;
@@ -132,6 +134,8 @@ static NSMutableSet *jsqMessagesCollectionViewCellActions = nil;
     self.cellBottomLabel.font = [UIFont systemFontOfSize:11.0f];
     self.cellBottomLabel.textColor = [UIColor lightGrayColor];
 
+    self.unreadFlagImageView.image = [UIImage jsq_imageFromMessagesAssetBundleWithName:@"red_dot"];
+    
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(jsq_handleTapGesture:)];
     [self addGestureRecognizer:tap];
     self.tapGestureRecognizer = tap;
@@ -205,6 +209,10 @@ static NSMutableSet *jsqMessagesCollectionViewCellActions = nil;
     }
 }
 
+- (void)markAsRead:(BOOL)read
+{    
+    self.unreadFlagImageView.hidden = read;
+}
 
 #pragma mark - Collection view cell
 
@@ -230,6 +238,8 @@ static NSMutableSet *jsqMessagesCollectionViewCellActions = nil;
     if (self.failIndicatorImageView.superview) {
         [self.failIndicatorImageView removeFromSuperview];
     }
+    
+    self.unreadFlagImageView.hidden = YES;
 }
 
 - (UICollectionViewLayoutAttributes *)preferredLayoutAttributesFittingAttributes:(UICollectionViewLayoutAttributes *)layoutAttributes

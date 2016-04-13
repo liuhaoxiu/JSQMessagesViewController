@@ -16,6 +16,10 @@
  */
 - (void)audioMediaItem:(nonnull JSQAudioMediaItem*)audioMediaItem didChangeAudioCategory:(nonnull NSString *)category options:(AVAudioSessionCategoryOptions)options error:(nullable NSError*)error;
 
+@optional
+
+- (void)audioMediaItemDidFinishPlaying:(nonnull JSQAudioMediaItem *)audioMediaItem sucessfully:(BOOL)flag;
+
 @end
 
 /**

@@ -95,6 +95,13 @@
                             <constraint firstAttribute="height" constant="40" id="a0Q-Mp-QCu"/>
                         </constraints>
                     </view>
+                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="uyj-bH-FCG">
+                        <rect key="frame" x="280" y="40" width="8" height="8"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="8" id="9Zo-fI-OJa"/>
+                            <constraint firstAttribute="height" constant="8" id="s0L-Et-xSw"/>
+                        </constraints>
+                    </imageView>
                 </subviews>
                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
             </view>
@@ -103,11 +110,13 @@
                 <constraint firstAttribute="trailing" secondItem="UPz-5x-c1T" secondAttribute="trailing" id="G3U-h0-DWS"/>
                 <constraint firstAttribute="trailing" secondItem="afj-rd-iNv" secondAttribute="trailing" id="Ka4-Dy-jCS"/>
                 <constraint firstItem="afj-rd-iNv" firstAttribute="leading" secondItem="4lh-CK-yVn" secondAttribute="leading" id="OnD-mZ-QtR"/>
+                <constraint firstItem="uyj-bH-FCG" firstAttribute="top" secondItem="btS-p8-B7Z" secondAttribute="top" id="RYr-sD-kUm"/>
                 <constraint firstItem="Ufa-bF-l1Y" firstAttribute="leading" secondItem="4lh-CK-yVn" secondAttribute="leading" id="Z5z-m3-8Ne"/>
                 <constraint firstItem="afj-rd-iNv" firstAttribute="top" secondItem="4lh-CK-yVn" secondAttribute="top" id="ZG9-2M-N52"/>
                 <constraint firstItem="YMQ-5J-LE9" firstAttribute="centerY" secondItem="btS-p8-B7Z" secondAttribute="centerY" id="Zad-c6-Bnw"/>
                 <constraint firstAttribute="trailing" secondItem="Ufa-bF-l1Y" secondAttribute="trailing" id="cWQ-1Q-xOA"/>
                 <constraint firstItem="UPz-5x-c1T" firstAttribute="top" secondItem="Da1-09-wR4" secondAttribute="bottom" id="dDB-B0-c6J"/>
+                <constraint firstItem="uyj-bH-FCG" firstAttribute="leading" secondItem="btS-p8-B7Z" secondAttribute="trailing" id="giF-ec-0Rr"/>
                 <constraint firstItem="Ufa-bF-l1Y" firstAttribute="top" secondItem="afj-rd-iNv" secondAttribute="bottom" id="i9Y-sV-v6b"/>
                 <constraint firstItem="btS-p8-B7Z" firstAttribute="leading" secondItem="Da1-09-wR4" secondAttribute="trailing" constant="2" id="j0I-pm-eex"/>
                 <constraint firstItem="btS-p8-B7Z" firstAttribute="top" secondItem="Ufa-bF-l1Y" secondAttribute="bottom" id="jAu-Dn-7rN"/>
@@ -137,6 +146,7 @@
                 <outlet property="textViewBottomVerticalSpaceConstraint" destination="B2v-Gq-Y1L" id="oKV-Ti-Oci"/>
                 <outlet property="textViewMarginHorizontalSpaceConstraint" destination="4qS-03-PFO" id="1Qe-Ee-fUO"/>
                 <outlet property="textViewTopVerticalSpaceConstraint" destination="aEL-yH-N1p" id="WPl-0b-tf1"/>
+                <outlet property="unreadFlagImageView" destination="uyj-bH-FCG" id="mZu-AS-a9G"/>
             </connections>
             <point key="canvasLocation" x="255" y="202"/>
         </collectionViewCell>
