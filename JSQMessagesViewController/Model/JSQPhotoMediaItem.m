@@ -55,6 +55,25 @@
     _cachedImageView = nil;
 }
 
+#pragma mark - Override
+
+- (CGSize)mediaViewDisplaySize
+{
+    if (self.image) {
+        // If size less than (40, 40), zoom in to (40, 40); If size great than (210, 150), zoom out to (210, 150)
+        CGSize size = self.image.size;
+        size.width = MAX(size.width, 40.0);
+        size.width = MIN(size.width, 210.0);
+        
+        size.height = MAX(size.height, 40.0);
+        size.height = MIN(size.height, 150.0);
+        
+        return size;
+    }
+    
+    return [super mediaViewDisplaySize];
+}
+
 #pragma mark - Public
 
 - (void)updateSendingProgress:(CGFloat)progress
