@@ -23,6 +23,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "NSString+JSQMessages.h"
+#import "UIColor+JSQMessages.h"
 
 static CGFloat const sJSQCustomKeyboardHeight = 180.0f;
 
@@ -113,6 +114,8 @@ static NSString *sJSQKeyCellIdentifier = @"JSQKeyCell";
     JSQKeyCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:sJSQKeyCellIdentifier forIndexPath:indexPath];
     
     cell.keyImageView.image = model.keyImage;
+    
+    cell.keyNameLabel.textColor = [UIColor jsq_messageSoundWaveMediumturquoiseColor];
     cell.keyNameLabel.text = model.keyName;
     
     return cell;
