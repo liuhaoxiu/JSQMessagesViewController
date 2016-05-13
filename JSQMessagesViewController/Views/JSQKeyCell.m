@@ -56,10 +56,10 @@
 
 - (void)configureConstraintsForKeyImageView
 {
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_keyImageView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_containerView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:10]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_keyImageView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:_containerView attribute:NSLayoutAttributeRight multiplier:1.0 constant:-10]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_keyImageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_containerView attribute:NSLayoutAttributeTop multiplier:1.0 constant:10]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_keyImageView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:_containerView attribute:NSLayoutAttributeTop multiplier:1.0 constant:-10]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:_keyImageView attribute:NSLayoutAttributeLeft relatedBy:NSLayoutRelationEqual toItem:_containerView attribute:NSLayoutAttributeLeft multiplier:1.0 constant:18]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:_keyImageView attribute:NSLayoutAttributeRight relatedBy:NSLayoutRelationEqual toItem:_containerView attribute:NSLayoutAttributeRight multiplier:1.0 constant:-18]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:_keyImageView attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:_containerView attribute:NSLayoutAttributeTop multiplier:1.0 constant:18]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:_keyImageView attribute:NSLayoutAttributeBottom relatedBy:NSLayoutRelationEqual toItem:_containerView attribute:NSLayoutAttributeBottom multiplier:1.0 constant:-18]];
 }
 
 - (void)configureConstraintsForKeyNameLabel
