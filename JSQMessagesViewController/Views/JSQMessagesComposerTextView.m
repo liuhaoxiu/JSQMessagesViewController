@@ -115,7 +115,7 @@ static NSString *sJSQKeyCellIdentifier = @"JSQKeyCell";
     
     cell.keyImageView.image = model.keyImage;
     
-    cell.keyNameLabel.textColor = [UIColor jsq_messageSoundWaveMediumturquoiseColor];
+    cell.keyNameLabel.textColor = [UIColor jsq_messageCustomKeyboardTitleColor];
     cell.keyNameLabel.text = model.keyName;
     
     return cell;

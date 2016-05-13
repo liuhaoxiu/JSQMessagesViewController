@@ -62,6 +62,14 @@
                            alpha:1.0];
 }
 
++ (UIColor *)jsq_messageCustomKeyboardTitleColor
+{
+    return [UIColor colorWithRed:50.0/255.0
+                           green:50.0/255.0
+                            blue:50.0/255.0
+                           alpha:1.0];
+}
+
 #pragma mark - Utilities
 
 - (UIColor *)jsq_colorByDarkeningColorWithValue:(CGFloat)value

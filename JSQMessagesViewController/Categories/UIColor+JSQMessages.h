@@ -44,6 +44,8 @@
 
 + (UIColor *)jsq_messageSoundWaveMediumturquoiseColor;
 
++ (UIColor *)jsq_messageCustomKeyboardTitleColor;
+
 #pragma mark - Utilities
 
 /**
