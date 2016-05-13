@@ -147,13 +147,18 @@ static NSString *sJSQKeyCellIdentifier = @"JSQKeyCell";
 
 #pragma mark - Public method
 
-- (void)switchInputView
+- (void)switchInputView:(UIView *)inputView
 {
     if (self.inputView) {
         self.inputView = nil;
     }
     else {
-        self.inputView = self.customInputView;
+        if (inputView == nil) {
+            self.inputView = self.customInputView;
+        }
+        else {
+            self.inputView = inputView;
+        }
     }
     [self reloadInputViews];
 }

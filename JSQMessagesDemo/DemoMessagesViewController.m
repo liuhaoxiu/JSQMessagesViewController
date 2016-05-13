@@ -405,6 +405,7 @@
     JSQMessagesToolbarMediaContentView *mediaContentView = (JSQMessagesToolbarMediaContentView *)inputToolbar.contentView;
     
     [mediaContentView switchMediaContentView];
+    
 }
 
 - (void)startOrStopRecordingAudio
@@ -500,7 +501,7 @@
         [self.inputToolbar.contentView.textView becomeFirstResponder];
     }
     
-    [self.inputToolbar.contentView.textView switchInputView];
+    [self.inputToolbar.contentView.textView switchInputView:nil];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex

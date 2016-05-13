@@ -72,6 +72,6 @@
  */
 - (BOOL)hasText;
 
-- (void)switchInputView;
+- (void)switchInputView:(UIView *)inputView;
 
 @end
